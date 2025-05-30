@@ -1,12 +1,12 @@
 
 
+from typing import Callable
 from enum import Enum
+from tkinter import Misc, Frame
+from tkinter.ttk import Button
 
 from tkinterboardgame import Piece, Tile
-
-
-CIRCLE_IMAGE_PATH = "images/maru.png"
-CROSS_IMAGE_PATH = "images/batsu.png"
+from constants import CIRCLE_IMAGE_PATH, CROSS_IMAGE_PATH
 
 
 class Symbol(Enum):
@@ -31,3 +31,12 @@ class Cross(SymbolPiece):
 
     def __init__(self):
         super().__init__(Symbol.CROSS, CROSS_IMAGE_PATH)
+
+
+class PageTransitionButton(Button):
+
+    def __init__(self, master: Misc, text: str, display: Frame):
+        super().__init__(master, text=text, command=self.trans_page)
+
+    def trans_page(self):
+        pass
