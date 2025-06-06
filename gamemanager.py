@@ -2,7 +2,7 @@
 
 from tkinter import Frame
 
-from tkinterboardgame import Tile
+from tkinterboardgame import Tile, BGEvent
 from object import Symbol
 from board import TicTacToeBoard
 
@@ -13,7 +13,7 @@ class GameManager:
         self.symbol = Symbol.CIRCLE
         self.board = board
     
-    def draw_symbol(self, board, event):
+    def draw_symbol(self, event: BGEvent):
         pass
 
     def create_tile(self):
