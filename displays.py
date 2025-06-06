@@ -6,12 +6,13 @@ from tkinter.ttk import Button
 
 from tkinterboardgame import BoardGamePhotoImage
 from constants import CIRCLE_IMAGE_PATH, CROSS_IMAGE_PATH
-from object import Symbol
+from object import Symbol, PageTransitionButton
 
 
 TITLE_TEXT: str = "三目並べゲーム"
 NEW_GAME_BUTTON_TEXT: str = "あたらしいゲーム！"
 TO_HOME_BUTTON: str = "ホーム画面へ"
+WINNER_DISPLAY_HEIGHT = 80
 
 
 class HomeDisplay(Frame):
@@ -22,9 +23,6 @@ class HomeDisplay(Frame):
         
         self.title: Label = Label(self, text=TITLE_TEXT)
         self.start_button: Button = Button(self, text=NEW_GAME_BUTTON_TEXT)
-
-        self.title.pack(side="top")
-        self.start_button.pack(side="top")
 
 
 class GameDisplay(Frame):
@@ -41,7 +39,6 @@ class GameSubDisplay(Frame):
     IMAGE_TAG: str = "symbol"
 
     def __init__(self, master: Misc, size: Sequence[int]):
-        self.size = size
         super().__init__(master, width=size[0], height=size[1])
 
         self.current_symbol: Canvas = Canvas(self, width=size[0], height=size[1])
@@ -57,15 +54,27 @@ class GameSubDisplay(Frame):
             case Symbol.CROSS: image = PhotoImage(file=CROSS_IMAGE_PATH)
         self.current_symbol.create_image(image=image, tags=self.IMAGE_TAG)
     
-    def display_ending(self, won_symbol: Symbol):
-        pass
+    def display_ending(self, won_symbol: Symbol, home_display: HomeDisplay):
+        winner_display = WinnerDisplay(
+            self, 
+            (self.winfo_width(), WINNER_DISPLAY_HEIGHT),
+            won_symbol,
+        )
+        winner_display.pack(side="top")
+
+        button = PageTransitionButton(
+            self,
+            TO_HOME_BUTTON,
+            home_display
+        )
+        button.pack(side="top")
 
 
 class WinnerDisplay(Frame):
 
     def __init__(self, master: Misc, size: Sequence[int], symbol: Symbol):
         super().__init__(master)
-        
+
         match symbol:
             case Symbol.CIRCLE: image = BoardGamePhotoImage(CIRCLE_IMAGE_PATH)
             case Symbol.CROSS: image = BoardGamePhotoImage(CROSS_IMAGE_PATH)

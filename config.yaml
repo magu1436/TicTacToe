@@ -1,3 +1,5 @@
 
 CIRCLE_IMAGE_PATH = "images/maru.png"
 CROSS_IMAGE_PATH = "images/batsu.png"
+BACKGROUND_PATH = "images/background.png"
+GRID_PATH = "images/grid.png"
