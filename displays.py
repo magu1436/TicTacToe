@@ -2,11 +2,11 @@
 from typing import Sequence, Callable
 from enum import StrEnum
 
-from tkinter import Frame, Label, Misc, Canvas, PhotoImage, Event
+from tkinter import Frame, Label, Misc, Canvas, Event
 from tkinter.ttk import Button
 
-from tkinterboardgame import BoardGamePhotoImage
-from constants import CIRCLE_IMAGE_PATH, CROSS_IMAGE_PATH
+from tkinterboardgame import BoardGamePhotoImage, Coordinate
+from constants import CIRCLE_IMAGE_PATH, CROSS_IMAGE_PATH, BACKGROUND_PATH, TITLE_LOGO_PATH
 from object import Symbol
 from board import TicTacToeBoard
 
@@ -15,6 +15,9 @@ TITLE_TEXT: str = "三目並べゲーム"
 NEW_GAME_BUTTON_TEXT: str = "あたらしいゲーム！"
 HOME_BUTTON_TEXT: str = "ホーム画面へ"
 WINNER_DISPLAY_HEIGHT = 80
+
+TITLE_LOGO_RATIO = .8
+CONTENT_PADDING = 30
 
 
 class View(StrEnum):
@@ -25,11 +28,11 @@ class View(StrEnum):
 class ViewTransitionButton(Button):
 
     def __init__(self, master: Misc, text: str, view_to: View, another_command: Callable[[], None] | None = None):
-        super().__init__(master, text=text)
+        super().__init__(master, text=text, command=self.on_click)
         self.view_to = view_to
         self.another_command = another_command
     
-    def on_click(self, event: Event):
+    def on_click(self):
         for child in self.master.winfo_toplevel().winfo_children():
             if child.winfo_name() == self.view_to:
                 child.tkraise()
@@ -52,9 +55,45 @@ class HomeDisplay(Frame):
             height=self.display_size[1]
         )
         
-        self.title: Label = Label(self, text=TITLE_TEXT)
+        self.home_canvas: Canvas = Canvas(
+            self,
+            width=self.display_size[0],
+            height=self.display_size[1]
+        )
+        self.home_canvas.pack(fill="both", expand=True)
+
+        self.__bg_image_ref: BoardGamePhotoImage = BoardGamePhotoImage(
+            BACKGROUND_PATH,
+            self.display_size,
+        )
+        self.home_canvas.create_image(
+            0,
+            0,
+            image=self.__bg_image_ref,
+            anchor="nw"
+        )
+        
+        title_logo_width = self.display_size[0] * TITLE_LOGO_RATIO
+        self.__title_image_ref: BoardGamePhotoImage = BoardGamePhotoImage(
+            TITLE_LOGO_PATH
+        )
+        img_origin_size = Coordinate(self.__title_image_ref.width(), self.__title_image_ref.height())
+        logo_ratio_to_window = title_logo_width // img_origin_size.x
+        self.__title_image_ref.resize(img_origin_size * logo_ratio_to_window)
+        self.home_canvas.create_image(
+            self.display_size[0] // 2,
+            CONTENT_PADDING + self.__title_image_ref.height(),
+            image=self.__title_image_ref,
+            anchor="s"
+        )
+
         self.start_button: ViewTransitionButton = ViewTransitionButton(
             self, NEW_GAME_BUTTON_TEXT, View.GAME
+        )
+        self.start_button.place(
+            x=self.display_size[0] // 2,
+            y=2 * CONTENT_PADDING + self.__title_image_ref.height(),
+            anchor="c"
         )
 
 

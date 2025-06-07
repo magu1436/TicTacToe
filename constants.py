@@ -14,6 +14,7 @@ CIRCLE_IMAGE_PATH = ""
 CROSS_IMAGE_PATH = ""
 BACKGROUND_PATH = ""
 GRID_PATH = ""
+TITLE_LOGO_PATH = ""
 
 
 def load_config() -> None:
@@ -22,6 +23,7 @@ def load_config() -> None:
     global CROSS_IMAGE_PATH
     global BACKGROUND_PATH
     global GRID_PATH
+    global TITLE_LOGO_PATH
     
     with open("config.yaml", "r") as file:
         config = safe_load(file)
@@ -30,6 +32,7 @@ def load_config() -> None:
     CROSS_IMAGE_PATH = config["CROSS_IMAGE_PATH"]
     BACKGROUND_PATH = config["BACKGROUND_PATH"]
     GRID_PATH = config["GRID_PATH"]
+    TITLE_LOGO_PATH = config["TITLE_LOGO_PATH"]
 
 
 load_config()
