@@ -77,8 +77,9 @@ class Board(Frame):
         self.__board_id: int | None = None  # キャンバス上のボード画像のID
         self.__frame_id: int | None = None  # キャンバス上のボード画像のID
 
+        calc_frame_width = False if frame_image is None else True
         frame_image = BoardGamePhotoImage(frame_image)
-        self.__set_frame_info(frame_image)
+        self.__set_frame_info(frame_image, calc_frame_width)
 
         self.__set_board_sizes(board_display_size, grid_display_width)
 
@@ -129,13 +130,16 @@ class Board(Frame):
         self.take_all_pieces()
         self.board_canvas.place(x=0, y=0)
     
-    def __set_frame_info(self, frame_image: BoardGamePhotoImage):
+    def __set_frame_info(self, frame_image: BoardGamePhotoImage, calc_frame_width: bool):
         """フレーム画像の透過部分を参照してフレームの大きさを割り出し、セットする関数"""
 
         # ボードのサイズ比に合わせて、フレーム画像をリサイズ
         frame_image.resize(self.__whole_board_display_size)
         self.__frame_image: BoardGamePhotoImage = frame_image
-        self.__frame_width: int = get_frame_width(self.__frame_image)
+        if calc_frame_width:
+            self.__frame_width: int = get_frame_width(self.__frame_image)
+        else:
+            self.__frame_width: int = 1
     
     def __set_board_sizes(
             self, 

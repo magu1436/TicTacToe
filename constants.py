@@ -23,7 +23,8 @@ def load_config() -> None:
     global BACKGROUND_PATH
     global GRID_PATH
     
-    config = safe_load(__config_file_path)
+    with open("config.yaml", "r") as file:
+        config = safe_load(file)
 
     CIRCLE_IMAGE_PATH = config["CIRCLE_IMAGE_PATH"]
     CROSS_IMAGE_PATH = config["CROSS_IMAGE_PATH"]
