@@ -22,7 +22,7 @@ class View(StrEnum):
     GAME = "game"
 
 
-class ViewTranstionButton(Button):
+class ViewTransitionButton(Button):
 
     def __init__(self, master: Misc, text: str, view_to: View, another_command: Callable[[], None] | None = None):
         super().__init__(master, text=text)
@@ -53,7 +53,7 @@ class HomeDisplay(Frame):
         )
         
         self.title: Label = Label(self, text=TITLE_TEXT)
-        self.start_button: ViewTranstionButton = ViewTranstionButton(
+        self.start_button: ViewTransitionButton = ViewTransitionButton(
             self, NEW_GAME_BUTTON_TEXT, View.GAME
         )
 
@@ -93,7 +93,7 @@ class GameSubDisplay(Frame):
         super().__init__(master, width=size[0], height=size[0])
         self.display_size: tuple[int, int] = size
 
-        self.home_button: ViewTranstionButton = ViewTranstionButton(
+        self.home_button: ViewTransitionButton = ViewTransitionButton(
             self, 
             HOME_BUTTON_TEXT, 
             View.HOME,
