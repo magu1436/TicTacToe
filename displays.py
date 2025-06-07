@@ -82,7 +82,7 @@ class GameDisplay(Frame):
             self,
             (self.display_size[0] - self.board.board_display_size[0], self.display_size[1])
         )
-        self.board.pack(side="left")
+        self.sub_display.pack(side="left")
 
 
 class GameSubDisplay(Frame):
@@ -90,7 +90,7 @@ class GameSubDisplay(Frame):
     IMAGE_TAG: str = "symbol"
 
     def __init__(self, master: GameDisplay, size: tuple[int, int]):
-        super().__init__(master, width=size[0], height=size[0])
+        super().__init__(master, width=size[0], height=size[1])
         self.display_size: tuple[int, int] = size
 
         self.home_button: ViewTransitionButton = ViewTransitionButton(
@@ -99,10 +99,11 @@ class GameSubDisplay(Frame):
             View.HOME,
             lambda: (master.board.take_all_pieces(), self.reset_display())
             )
-        self.pack(side="top")
+        self.home_button.pack(side="top")
 
         self.canvas_size: tuple[int. int] = (size[0], size[0])
         self.current_symbol: Canvas = Canvas(self, width=self.canvas_size[0], height=self.canvas_size[1])
+        self.reset_display()
         self.current_symbol.pack(side="top")
 
         self.winner_display = None
