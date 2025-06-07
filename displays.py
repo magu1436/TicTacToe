@@ -92,6 +92,7 @@ class GameSubDisplay(Frame):
     def __init__(self, master: GameDisplay, size: tuple[int, int]):
         super().__init__(master, width=size[0], height=size[1])
         self.display_size: tuple[int, int] = size
+        self.winner_display = None
 
         self.home_button: ViewTransitionButton = ViewTransitionButton(
             self, 
@@ -105,8 +106,6 @@ class GameSubDisplay(Frame):
         self.current_symbol: Canvas = Canvas(self, width=self.canvas_size[0], height=self.canvas_size[1])
         self.reset_display()
         self.current_symbol.pack(side="top")
-
-        self.winner_display = None
     
     def update_symbol(self, symbol: Symbol):
         self.current_symbol.delete(self.IMAGE_TAG)
@@ -114,14 +113,15 @@ class GameSubDisplay(Frame):
     
     def __draw_symbol(self, symbol: Symbol):
         match symbol:
-            case Symbol.CIRCLE: image = BoardGamePhotoImage(CIRCLE_IMAGE_PATH)
-            case Symbol.CROSS: image = BoardGamePhotoImage(CROSS_IMAGE_PATH)
-        image.resize(self.canvas_size)
+            case Symbol.CIRCLE: self.__symbol_image_ref = BoardGamePhotoImage(CIRCLE_IMAGE_PATH)
+            case Symbol.CROSS: self.__symbol_image_ref = BoardGamePhotoImage(CROSS_IMAGE_PATH)
+        self.__symbol_image_ref.resize(self.canvas_size)
         self.current_symbol.create_image(
-            image=image,
-            x=0,
-            y=0,
+            0,
+            0,
+            image=self.__symbol_image_ref,
             tags=self.IMAGE_TAG,
+            anchor="nw"
         )
 
     def display_ending(self, won_symbol: Symbol):
@@ -145,13 +145,13 @@ class WinnerDisplay(Frame):
         super().__init__(master)
 
         match symbol:
-            case Symbol.CIRCLE: image = BoardGamePhotoImage(CIRCLE_IMAGE_PATH)
-            case Symbol.CROSS: image = BoardGamePhotoImage(CROSS_IMAGE_PATH)
+            case Symbol.CIRCLE: self.__symbol_image_ref = BoardGamePhotoImage(CIRCLE_IMAGE_PATH)
+            case Symbol.CROSS: self.__symbol_image_ref = BoardGamePhotoImage(CROSS_IMAGE_PATH)
         canvas_size = (size[1], size[1])
-        image.resize(canvas_size)
+        self.__symbol_image_ref.resize(canvas_size)
 
         self.symbol_canvas: Canvas = Canvas(self, width=canvas_size[0], height=canvas_size[1])
-        self.symbol_canvas.create_image(0, 0, image=image, anchor="NW")
+        self.symbol_canvas.create_image(0, 0, image=self.__symbol_image_ref, anchor="nw")
 
         self.label = Label(self, text="の勝ち！")
 
