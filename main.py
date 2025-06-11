@@ -9,6 +9,8 @@ from gamemanager import GameManager
 def main():
     root = tk.Tk()
     root.state("zoomed")
+    root.title("TicTacToe")
+    root.iconbitmap(default="images/fabicon.ico")
     root.update_idletasks()
 
     game = GameDisplay(root)
