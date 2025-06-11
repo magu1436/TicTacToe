@@ -3,6 +3,7 @@
 import tkinter as tk
 
 from displays import GameDisplay, HomeDisplay
+from gamemanager import GameManager
 
 
 def main():
@@ -12,7 +13,8 @@ def main():
 
     game = GameDisplay(root)
     game.place(x=0, y=0)
-    game.lower()
+    
+    manager = GameManager(game)
 
     home = HomeDisplay(root)
     home.place(x=0, y=0)

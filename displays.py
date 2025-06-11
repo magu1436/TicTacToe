@@ -9,12 +9,13 @@ from tkinterboardgame import BoardGamePhotoImage, Coordinate
 from constants import CIRCLE_IMAGE_PATH, CROSS_IMAGE_PATH, BACKGROUND_PATH, TITLE_LOGO_PATH
 from object import Symbol
 from board import TicTacToeBoard
+from text_object import AutoFontLabel
 
 
 TITLE_TEXT: str = "三目並べゲーム"
 NEW_GAME_BUTTON_TEXT: str = "あたらしいゲーム！"
 HOME_BUTTON_TEXT: str = "ホーム画面へ"
-WINNER_DISPLAY_HEIGHT = 80
+WINNER_DISPLAY_HEIGHT = 150
 
 TITLE_LOGO_RATIO = .8
 CONTENT_PADDING = 30
@@ -121,7 +122,7 @@ class GameDisplay(Frame):
             self,
             (self.display_size[0] - self.board.board_display_size[0], self.display_size[1])
         )
-        self.sub_display.pack(side="left")
+        self.sub_display.pack(side="left", fill="both", expand=True)
 
 
 class GameSubDisplay(Frame):
@@ -130,6 +131,7 @@ class GameSubDisplay(Frame):
 
     def __init__(self, master: GameDisplay, size: tuple[int, int]):
         super().__init__(master, width=size[0], height=size[1])
+        self.pack_propagate(False)
         self.display_size: tuple[int, int] = size
         self.winner_display = None
 
@@ -139,12 +141,11 @@ class GameSubDisplay(Frame):
             View.HOME,
             lambda: (master.board.take_all_pieces(), self.reset_display())
             )
-        self.home_button.pack(side="top")
+        self.home_button.pack(side="top", fill="both", expand=True)
 
         self.canvas_size: tuple[int. int] = (size[0], size[0])
         self.current_symbol: Canvas = Canvas(self, width=self.canvas_size[0], height=self.canvas_size[1])
         self.reset_display()
-        self.current_symbol.pack(side="top")
     
     def update_symbol(self, symbol: Symbol):
         self.current_symbol.delete(self.IMAGE_TAG)
@@ -164,24 +165,31 @@ class GameSubDisplay(Frame):
         )
 
     def display_ending(self, won_symbol: Symbol):
+        self.current_symbol.pack_forget()
         self.winner_display = WinnerDisplay(
             self, 
             (self.winfo_width(), WINNER_DISPLAY_HEIGHT),
             won_symbol,
         )
-        self.winner_display.pack(side="top")
+        self.winner_display.pack(side="top", fill="both", expand=True)
     
     def reset_display(self):
-        self.update_symbol(Symbol.CIRCLE)
         if self.winner_display is not None:
             self.winner_display.destroy()
             self.winner_display = None
+        self.current_symbol.pack(side="top")
+        self.update_symbol(Symbol.CIRCLE)
 
 
 class WinnerDisplay(Frame):
 
     def __init__(self, master: Misc, size: Sequence[int], symbol: Symbol):
-        super().__init__(master)
+        super().__init__(
+            master,
+            width=size[0],
+            height=size[1],
+        )
+        self.pack_propagate(False)
 
         match symbol:
             case Symbol.CIRCLE: self.__symbol_image_ref = BoardGamePhotoImage(CIRCLE_IMAGE_PATH)
@@ -192,7 +200,11 @@ class WinnerDisplay(Frame):
         self.symbol_canvas: Canvas = Canvas(self, width=canvas_size[0], height=canvas_size[1])
         self.symbol_canvas.create_image(0, 0, image=self.__symbol_image_ref, anchor="nw")
 
-        self.label = Label(self, text="の勝ち！")
+        self.label = AutoFontLabel(
+            self,
+            "の勝ち！",
+            size[0] - canvas_size[0]
+        )
 
         self.symbol_canvas.pack(side="left")
         self.label.pack(side="left")
