@@ -40,7 +40,7 @@ class GameManager:
         )
 
         if self.__check_won_when_putting(self.turn_symbol, event.coordinate):
-            self.end()
+            self.end(self.turn_symbol)
         
         self.change_turn()
     
@@ -68,7 +68,7 @@ class GameManager:
         
         # 試合が終了していないか判定
         if len(self.board.get_all_pieces()) == (self.board.board_size.x * self.board.board_size.y):
-            self.end()
+            self.end(None)
 
         for symbol in Symbol:
             if self.turn_symbol != symbol:
@@ -77,6 +77,6 @@ class GameManager:
         
         self.game_display.sub_display.update_symbol(self.turn_symbol)
 
-    def end(self):
+    def end(self, won_symbol: Symbol | None):
         self.board.reset_tiles()
-        self.game_display.sub_display.display_ending(self.turn_symbol)
+        self.game_display.sub_display.display_ending(won_symbol)

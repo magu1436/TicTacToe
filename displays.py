@@ -164,7 +164,7 @@ class GameSubDisplay(Frame):
             anchor="nw"
         )
 
-    def display_ending(self, won_symbol: Symbol):
+    def display_ending(self, won_symbol: Symbol | None):
         self.current_symbol.pack_forget()
         self.winner_display = WinnerDisplay(
             self, 
@@ -183,7 +183,7 @@ class GameSubDisplay(Frame):
 
 class WinnerDisplay(Frame):
 
-    def __init__(self, master: Misc, size: Sequence[int], symbol: Symbol):
+    def __init__(self, master: Misc, size: Sequence[int], symbol: Symbol | None):
         super().__init__(
             master,
             width=size[0],
@@ -191,20 +191,27 @@ class WinnerDisplay(Frame):
         )
         self.pack_propagate(False)
 
-        match symbol:
-            case Symbol.CIRCLE: self.__symbol_image_ref = BoardGamePhotoImage(CIRCLE_IMAGE_PATH)
-            case Symbol.CROSS: self.__symbol_image_ref = BoardGamePhotoImage(CROSS_IMAGE_PATH)
-        canvas_size = (size[1], size[1])
-        self.__symbol_image_ref.resize(canvas_size)
+        if symbol is None:
+            canvas_size = (0, size[1])
+            label_text = "引き分け！"
+        else:
+            canvas_size = (size[1], size[1])
+            label_text = "の勝ち！"
 
-        self.symbol_canvas: Canvas = Canvas(self, width=canvas_size[0], height=canvas_size[1])
-        self.symbol_canvas.create_image(0, 0, image=self.__symbol_image_ref, anchor="nw")
+        if symbol is not None:
+            match symbol:
+                case Symbol.CIRCLE: self.__symbol_image_ref = BoardGamePhotoImage(CIRCLE_IMAGE_PATH)
+                case Symbol.CROSS: self.__symbol_image_ref = BoardGamePhotoImage(CROSS_IMAGE_PATH)
+            self.__symbol_image_ref.resize(canvas_size)
+
+            self.symbol_canvas: Canvas = Canvas(self, width=canvas_size[0], height=canvas_size[1])
+            self.symbol_canvas.create_image(0, 0, image=self.__symbol_image_ref, anchor="nw")
+            self.symbol_canvas.pack(side="left")
 
         self.label = AutoFontLabel(
             self,
-            "の勝ち！",
+            label_text,
             size[0] - canvas_size[0]
         )
 
-        self.symbol_canvas.pack(side="left")
         self.label.pack(side="left")
